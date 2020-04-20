@@ -1,9 +1,14 @@
 package com.example.yummpies;
+import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.facebook.FacebookSdk;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +33,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -44,12 +52,79 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore fstore;
     ImageButton loginButton;
     String userId;
+    private  static FirebaseUser user;
+    private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
+    private static final int ERROR_DIALOG_REQUEST = 9001;
+
+    void requestLocation()
+    {
+        LocationManager lm = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled && !network_enabled) {
+            // notify user
+            new AlertDialog.Builder(this)
+                    .setTitle("Location Services Required")
+                    .setMessage("GPS not enabled")
+                    .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .setNegativeButton("Cancel",null)
+                    .show();
+        }
+    }
+
+
+
+    private void checkPermissionLocation()
+    {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED) {
+            // Permission already Granted
+            //Do your work here
+            //Perform operations here only which requires permission
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Permission Granted
+                //Do your work here
+                //Perform operations here only which requires permission
+            }
+        }
+    }
+
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        requestLocation();
+        checkPermissionLocation();
 
         mEmail = findViewById(R.id.Email);
         mPassword = findViewById(R.id.password);
@@ -59,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         forgotTextLink = findViewById(R.id.textView3);
         fAuth = FirebaseAuth.getInstance();
         loginButton = findViewById(R.id.fb);
+
 
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +162,10 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(MainActivity.this, "user created", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), DelActivity.class));
+                            user=fAuth.getCurrentUser();
+                            Intent a = new Intent(MainActivity.this, MapsActivity.class);
+                            a.putExtra("user", user);
+                            MainActivity.this.startActivity(a);
                         }
                         else { Toast.makeText(MainActivity.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show(); }
                     }

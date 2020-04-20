@@ -1,6 +1,15 @@
 <resources>
-    <string name="app_name">Login</string>
+    <string name="app_name">Yummpies</string>
     <string name="facebook_app_id">1159246151091567</string>
     <string name="fb_login_protocol_scheme">fb1159246151091567</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="enter_your_email_address">Enter your email address</string>
+    <string name="register">REGISTER</string>
+    <string name="create_password">Create password</string>
+    <string name="enter_10_digit_phone_number">Enter 10-digit phone number</string>
+    <string name="delivery_boy">Delivery boy?</string>
+    <string name="sign_up">Sign Up!</string>
+    <string name="already_an_existing_user_log_in">Already an existing user? Log in</string>
+    <string name="title_activity_maps2">Map</string>
 
 </resources>
