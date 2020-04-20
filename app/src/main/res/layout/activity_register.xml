@@ -93,19 +93,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText7" />
 
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginLeft="44dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="281dp"
+        android:layout_marginRight="281dp"
+        android:layout_marginBottom="94dp"
+        android:checked="false"
+        android:text="Regular?"
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="137dp"
-        android:layout_marginLeft="137dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginLeft="138dp"
         android:layout_marginTop="60dp"
-        android:layout_marginEnd="186dp"
-        android:layout_marginRight="186dp"
+        android:layout_marginEnd="185dp"
+        android:layout_marginRight="185dp"
+        android:layout_marginBottom="34dp"
         android:text="@string/register"
         android:textColor="#000"
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
@@ -133,16 +151,18 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginLeft="92dp"
+        android:layout_marginStart="93dp"
+        android:layout_marginLeft="93dp"
         android:layout_marginTop="34dp"
-        android:layout_marginEnd="120dp"
-        android:layout_marginRight="120dp"
+        android:layout_marginEnd="124dp"
+        android:layout_marginRight="124dp"
         android:text="@string/already_an_existing_user_log_in"
         android:textColor="#111"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.64"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

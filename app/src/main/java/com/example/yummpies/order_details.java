@@ -49,6 +49,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.SetOptions;
@@ -82,6 +83,7 @@ public class order_details extends AppCompatActivity implements Serializable {
 
 
     private Button confirm;
+    private boolean regular;
     private List<Data> list = new ArrayList<>();
 
     private ProgressDialog progressDialog;
@@ -102,11 +104,110 @@ public class order_details extends AppCompatActivity implements Serializable {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionReference = db.collection(CURRENT_ORDERS);
+    private CollectionReference users = db.collection("users");
+    private DocumentReference document;
 
     @Override
     protected void onStart() {
         super.onStart();
-        getLocation();
+        DocumentReference docref =db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        docref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                final boolean regular =documentSnapshot.getBoolean("regular");
+
+                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(order_details.this);
+                try {
+                    final Task location = fusedLocationProviderClient.getLastLocation();
+                    location.addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            if (task.isSuccessful()) {
+                                currentLocation = (Location) task.getResult();
+
+                                if(currentLocation==null)
+                                {
+                                    Toast.makeText(order_details.this, "Location Not Found", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                            }
+
+                            if(currentLocation!=null)
+                            {
+
+                                Location.distanceBetween(gp.getLatitude(), gp.getLongitude(), currentLocation.getLatitude(), currentLocation.getLongitude(), dist);
+                                if(dist[0]<10.0*1000 )
+                                {
+                                    if (regular)
+                                    {
+                                        total = total*(0.80);
+                                        tv9.setText("\nNOTE: \nEligible for free delivery! \nInclusive of 20% discount!\n");
+                                    }
+                                    else
+                                    {
+                                        total = total*(1.00);
+                                        tv9.setText("\nNOTE: \nEligible for free delivery!\n");
+                                    }
+
+                                }
+                                else if(dist[0]>10.0*100 && dist[0]<20.0*1000)
+                                {
+                                    if(regular)
+                                    {
+                                        total = total*(0.85);
+                                        tv9.setText("\nNOTE: \n5% added due to large distance between you and the eatery!\nInclusive of 20% discount!\n");
+                                    }
+                                    else
+                                    {
+                                        total = total*(1.05);
+                                        tv9.setText("\nNOTE: \n5% added due to large distance between you and the eatery!\n");}
+                                }
+                                else if(dist[0]>20.0*1000 && dist[0]<30.0*1000)
+                                {
+                                    if (regular)
+                                    {
+                                        total = total*(0.90);
+                                        tv9.setText("\nNOTE: \n10% added due to large distance between you and the eatery!\nInclusive of 20% discount!\n");
+                                    }
+
+                                    else{
+                                        total = total*(1.1);
+                                        tv9.setText("\nNOTE: \n10% added due to large distance between you and the eatery!\n");}
+                                }
+                                else
+                                {
+                                    if (regular)
+                                    {
+                                        total = total*(0.95);
+                                        tv9.setText("\nNOTE: \n15% added due to large distance between you and the eatery!\nInclusive of 20% discount!\n");
+                                    }
+
+                                    else{
+                                        total = total*(1.15);
+                                        tv9.setText("\nNOTE: \n15% added due to large distance between you and the eatery!\n");}
+                                }
+
+                            }
+
+                            total = Double.parseDouble(String.format("%.3f",total));
+                            tv1.append(String.valueOf(total));
+
+
+                            /* adapter = new OrderAdapter(order_details.this, R.layout.list_order_items, itemlist);*/
+                            ArrayAdapter<String> adapter=new ArrayAdapter<String>(order_details.this,android.R.layout.simple_list_item_1,itemlist);
+                            ls.setAdapter(adapter);
+
+                        }
+                    });
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+
     }
 
     @Override
@@ -161,6 +262,8 @@ public class order_details extends AppCompatActivity implements Serializable {
         }
 
         total = Double.parseDouble(String.format("%.3f", total));
+
+
 
 
         Intent intent = order_details.this.getIntent();
@@ -253,77 +356,6 @@ public class order_details extends AppCompatActivity implements Serializable {
 
             }
         });
-        }
-
-
-
-    void getLocation() {
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        try {
-            final Task location = fusedLocationProviderClient.getLastLocation();
-            location.addOnCompleteListener(new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()) {
-                         currentLocation = (Location) task.getResult();
-
-                        if(currentLocation==null)
-                        {
-                            Toast.makeText(order_details.this, "Location Not Found", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                    }
-
-                    if(currentLocation!=null)
-                    {
-
-                        Location.distanceBetween(gp.getLatitude(), gp.getLongitude(), currentLocation.getLatitude(), currentLocation.getLongitude(), dist);
-                        if(dist[0]<10.0*1000 )
-                        {
-                            total = total*(1.05);
-
-                            tv9.setText("\nNOTE: \nEligible for free delivery\n");
-
-                        }
-                        else if(dist[0]>10.0*100 && dist[0]<20.0*1000)
-                        {
-                            total = total*(1.05);
-
-                            tv9.setText("\nNOTE: \n5% added due to large distance between you and the eatery!\n");
-                        }
-                        else if(dist[0]>20.0*1000 && dist[0]<30.0*1000)
-                        {
-                            total = total*(1.1);
-
-                            tv9.setText("\nNOTE: \n10% added due to large distance between you and the eatery!\n");
-                        }
-                        else
-                        {
-                            total = total*(1.15);
-
-                            tv9.setText("\nNOTE: \n15% added due to large distance between you and the eatery!\n");
-                        }
-
-                    }
-
-                    total = Double.parseDouble(String.format("%.3f",total));
-                    tv1.append(String.valueOf(total));
-
-
-                   /* adapter = new OrderAdapter(order_details.this, R.layout.list_order_items, itemlist);*/
-                    ArrayAdapter<String> adapter=new ArrayAdapter<String>(order_details.this,android.R.layout.simple_list_item_1,itemlist);
-                    ls.setAdapter(adapter);
-
-                }
-            });
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-
-        }
     }
 
     @Override

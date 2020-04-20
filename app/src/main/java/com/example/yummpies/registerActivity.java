@@ -33,7 +33,7 @@ public class registerActivity extends AppCompatActivity {
     EditText mFullName,mEmail,mPassword,mPhone;
     Button mRegisterBtn;
     TextView mLoginBtn;
-    CheckBox tick;
+    CheckBox tick,tick2;
     FirebaseAuth fAuth;
     FirebaseFirestore fstore;
     String userID;
@@ -50,6 +50,7 @@ public class registerActivity extends AppCompatActivity {
         mRegisterBtn= findViewById(R.id.button);
         mLoginBtn   = findViewById(R.id.textView6);
         tick = findViewById(R.id.checkBox);
+        tick2=findViewById(R.id.checkBox2);
         fAuth = FirebaseAuth.getInstance();
         fstore=FirebaseFirestore.getInstance();
 
@@ -68,6 +69,7 @@ public class registerActivity extends AppCompatActivity {
                 final String fullName=mFullName.getText().toString();
                 final String phone= mPhone.getText().toString();
                 final boolean driver = tick.isChecked();
+                final boolean regular = tick2.isChecked();
 
                 if(TextUtils.isEmpty(email)){
                     mEmail.setError("Email is Required.");
@@ -94,7 +96,7 @@ public class registerActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            /*FirebaseUser fuser=fAuth.getCurrentUser();
+                            FirebaseUser fuser=fAuth.getCurrentUser();
                             fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -106,7 +108,7 @@ public class registerActivity extends AppCompatActivity {
                                 public void onFailure(@NonNull Exception e) {
                                     Log.d(TAG,"onFailure: Email not sent" + e.getMessage());
                                 }
-                            }); */
+                            });
                             Toast.makeText(registerActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
                             userID=fAuth.getCurrentUser().getUid();
                             DocumentReference documentReference = fstore.collection("users").document(userID);
@@ -115,6 +117,7 @@ public class registerActivity extends AppCompatActivity {
                             user.put("email",email);
                             user.put("phone",phone);
                             user.put("deliveryBoy",driver);
+                            user.put("regular",regular);
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {

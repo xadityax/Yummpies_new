@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fstore;
     ImageButton loginButton;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference users = db.collection("users");
     String userId;
     private  static FirebaseUser user;
     private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
@@ -161,11 +164,25 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "user created", Toast.LENGTH_SHORT).show();
-                            user=fAuth.getCurrentUser();
-                            Intent a = new Intent(MainActivity.this, MapsActivity.class);
-                            a.putExtra("user", user);
-                            MainActivity.this.startActivity(a);
+                            DocumentReference docref = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            docref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    final boolean dboy = documentSnapshot.getBoolean("deliveryBoy");
+                                    Toast.makeText(MainActivity.this, "user created", Toast.LENGTH_SHORT).show();
+                                    if(dboy){
+                                    user = fAuth.getCurrentUser();
+                                    Intent a = new Intent(MainActivity.this,delActivity.class);
+                                    a.putExtra("user", user);
+                                    MainActivity.this.startActivity(a);}
+                                    else {
+                                        user = fAuth.getCurrentUser();
+                                        Intent b = new Intent(MainActivity.this,MapsActivity.class);
+                                        b.putExtra("user", user);
+                                        MainActivity.this.startActivity(b);
+                                    }
+                                }
+                            });
                         }
                         else { Toast.makeText(MainActivity.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show(); }
                     }

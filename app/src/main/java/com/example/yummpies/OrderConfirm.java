@@ -119,8 +119,8 @@ public class OrderConfirm extends AppCompatActivity {
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                tv1.setText(String.format("Hotel:%s", documentSnapshot.get(EATERY_NAME).toString()));
-                tv2.append(String.format("%.3f",documentSnapshot.getDouble(TOTAL)));
+                tv1.setText("Hotel: " + documentSnapshot.get(EATERY_NAME).toString());
+                tv2.setText("Total: "+documentSnapshot.getDouble(TOTAL).toString());
 
                 Timestamp timestamp = (Timestamp) documentSnapshot.get(ORDER_TIME);
                 tv3.append(timestamp.toDate().toString());
