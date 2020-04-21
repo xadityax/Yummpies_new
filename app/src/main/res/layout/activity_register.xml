@@ -104,7 +104,7 @@
         android:layout_marginRight="281dp"
         android:layout_marginBottom="94dp"
         android:checked="false"
-        android:text="Regular?"
+        android:text="Regular customer?"
         app:layout_constraintBottom_toTopOf="@+id/textView6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
