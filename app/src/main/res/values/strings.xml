@@ -11,5 +11,6 @@
     <string name="sign_up">Sign Up!</string>
     <string name="already_an_existing_user_log_in">Already an existing user? Log in</string>
     <string name="title_activity_maps2">Map</string>
+    <string name="title_activity_rider_maps">Map</string>
 
 </resources>
