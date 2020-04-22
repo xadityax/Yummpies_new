@@ -84,10 +84,10 @@
             android:layout_margin="10dp"
             android:padding="10dp"
             android:text="Time of Order - "
-            android:textSize="14sp"
-
-            android:textStyle="italic"
             android:textColor="#000"
+
+            android:textSize="14sp"
+            android:textStyle="italic"
 
             app:layout_constraintBottom_toTopOf="@+id/textView16"
             app:layout_constraintEnd_toEndOf="parent"
@@ -122,13 +122,22 @@
             android:padding="10dp"
 
 
-            android:text="Delivery boy details: Rohan, 9521654645"
+            android:text="Waiting for confirmation"
             android:textColor="#000"
 
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginLeft="8dp" />
+
+        <ProgressBar
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView16"
+            app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

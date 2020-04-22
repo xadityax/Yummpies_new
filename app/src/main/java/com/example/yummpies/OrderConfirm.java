@@ -17,8 +17,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
@@ -78,6 +80,7 @@ public class OrderConfirm extends AppCompatActivity {
     FirebaseUser user;
 
     boolean temp = true;
+    ProgressBar spin;
 
 
 
@@ -109,7 +112,9 @@ public class OrderConfirm extends AppCompatActivity {
         tv3 = findViewById(R.id.textView14);
         tv4 = findViewById(R.id.textView16);
         ls = findViewById(R.id.listView22);
+        spin=findViewById(R.id.spinner);
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        spin.setVisibility(View.VISIBLE);
         getLocation();
         user = getIntent().getParcelableExtra("user");
 
@@ -245,6 +250,7 @@ public class OrderConfirm extends AppCompatActivity {
 
                     if(documentSnapshot.get("confirm").toString()=="true")
                     {
+                        spin.setVisibility(View.GONE);
                         tv4.setText("Order Confirmed!");
                         /*funcAct();*/
                     }
