@@ -232,30 +232,30 @@ public class OrderConfirm extends AppCompatActivity {
 
 
 
-//        FirebaseFirestore.getInstance().collection("Current_Orders").document(order_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-//                if(e!=null)
-//                {
-//                    Log.e(TAG, "OnEvent", e);
-//                    return;
-//                }
-//                if(documentSnapshot!=null)
-//                {
-//
-//                    if(documentSnapshot.get("confirm").toString()=="true")
-//                    {
-//                        tv4.setText("Order Confirmed!");
-//                        /*funcAct();*/
-//                    }
-//
-//
-//                }
-//                else {
-//                    Log.e(TAG, "onEvent:NULL");
-//                }
-//            }
-//        });
+        FirebaseFirestore.getInstance().collection("Current_Orders").document(order_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if(e!=null)
+                {
+                    Log.e(TAG, "OnEvent", e);
+                    return;
+                }
+                if(documentSnapshot!=null)
+                {
+
+                    if(documentSnapshot.get("confirm").toString()=="true")
+                    {
+                        tv4.setText("Order Confirmed!");
+                        /*funcAct();*/
+                    }
+
+
+                }
+                else {
+                    Log.e(TAG, "onEvent:NULL");
+                }
+            }
+        });
 
     }
 
